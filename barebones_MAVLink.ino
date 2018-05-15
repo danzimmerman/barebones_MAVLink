@@ -1,4 +1,4 @@
-/*  minimal_MAVLink_QGC_teleop.ino
+/*  barebones_MAVLink.ino
 
    QGroundControl (http://qgroundcontrol.com/) is an open-source
    "ground control station" for uncrewed aerial vehicles.
@@ -24,7 +24,7 @@
    I had a hard time finding clear documentation or a simple example on how
    to establish a MAVLink "connection" between a vehicle and QGroundControl
    outside of the context of an existing autopilot. Over time, I worked it out
-   and wanted to contribute a clear, bare-bones example.
+   and wanted to contribute a clear example on a simple microcontroller.
  
    This code uses a ~very~ small subset of common MAVLink messages to negotiate a 
    serial-port connection with QGroundControl.
