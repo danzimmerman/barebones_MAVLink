@@ -7,6 +7,6 @@ However, I had a hard time finding clear documentation or a simple example of ho
 
 This Arduino sketch uses a small subset of [common MAVLink messages](https://mavlink.io/en/messages/common.html) and auto-generated C headers (added to this project as a submodule) to negotiate a serial-port connection with QGroundControl. It will then send some simple telemetry to QGroundControl and allow manual control using a [supported joystick](https://docs.qgroundcontrol.com/en/SetupView/Joystick.html#supported-joysticks) connected to the ground control computer. I tested this with the Logitech F710.
 
-This sketch is not necessarily that useful by itself, nor is it robust and well-tested. If you are working with a quadcopter, boat, or submarine, or wheeled rover, I wouldn't reinvent the wheel, and you should consider checking out one of the appropriate autopilot software offerings. I worked this out because I was adding MAVLink manual control and telemetry to an existing robot that was very different from any of the typical autopilots.
+This sketch is not necessarily that useful by itself, nor is it robust and well-tested. If you are working with a quadcopter, boat, or submarine, or wheeled rover, I wouldn't reinvent the wheel, using one of the appropriate autopilot software offerings would probably be more appropriate than working with MAVLink messages directly. I worked this out because I wanted to add MAVLink manual control and telemetry to an robot prototype that's very different from any vehicle covered by the typical autopilots.
 
 ## This is a work in progress.
