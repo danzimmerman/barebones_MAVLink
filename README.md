@@ -7,4 +7,4 @@ However, I had a hard time finding clear documentation or a simple example of ho
 
 This Arduino sketch uses a small subset of [common MAVLink messages](https://mavlink.io/en/messages/common.html) and auto-generated C headers (added to this project as a submodule) to negotiate a serial-port connection with QGroundControl.
 
-This sketch is not necessarily useful by itself, but demonstrates the minimal MAVLink message handling to connect, send some status data to QGroundControl, and recieve control input from a [supported joystick](https://docs.qgroundcontrol.com/en/SetupView/Joystick.html#supported-joysticks) connected to the ground control computer. I tested this with the Logitech F710.
+This sketch is not necessarily useful by itself, nor is it robust and well-tested. But it demonstrates some simple MAVLink message handling to connect, send some status data to QGroundControl, and recieve control input from a [supported joystick](https://docs.qgroundcontrol.com/en/SetupView/Joystick.html#supported-joysticks) connected to the ground control computer. I tested this with the Logitech F710.
