@@ -1,4 +1,4 @@
-# A Minimal QGroundControl Connection Example
+# A Minimal QGroundControl MAVLink Example
 
 QGroundControl (http://qgroundcontrol.com/) is an open-source
 "ground control station" for uncrewed aerial vehicles. Among many other features, it can display live-streaming inbound UDP video, provides attractive display of telemetry, and allows manual joystick remote control. It conveniently communicates with the vehicle controller using the [open MAVLink protocol](https://mavlink.io/).
