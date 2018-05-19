@@ -1,7 +1,7 @@
 # A Minimal QGroundControl MAVLink Example
 
 [QGroundControl](http://qgroundcontrol.com/) is an open-source
-"ground control station" for uncrewed aerial vehicles. It's an all-in-one center for display of live-streaming inbound UDP video, attractive display of vehicle telemetry, and manual joystick remote control. It communicates with the vehicle controller using the [open MAVLink protocol](https://mavlink.io/). Even though it's got a lot of features for autonomous aerial vehicle control, I thought it would be an attractive option for remote human-piloted teleoperation of a robot. 
+"ground control station" for uncrewed aerial vehicles. It's an all-in-one center for display of live-streaming inbound UDP video, attractive display of vehicle telemetry, and manual joystick remote control. It communicates with the vehicle controller using the [open MAVLink protocol](https://mavlink.io/). Even though it's got a lot of specialized features for autonomous aerial vehicle control, I thought it would be an attractive option for remote human-piloted teleoperation of a robot. 
 
 However, I had a hard time finding clear documentation or a simple example of how to establish a MAVLink "connection" between a vehicle and [QGroundControl](http://qgroundcontrol.com/) outside of the context of a complicated UAV or UUV autopilot framework. 
 
