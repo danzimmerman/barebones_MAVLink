@@ -14,7 +14,7 @@ That said, I was looking to add MAVLink telemetry and control to a platform wher
 ## Using This Sketch
 
 I was hoping to implement this on an Arduino Uno, but as-is it doesn't fit in memory. 
-So far, I've tested this on a Teensy 3.6. I might try to optimize it to fit on the Uno but it will require more careful sharing of resources, and I don't want that complication in the basic demo.
+Tests here use a [Teensy 3.6](https://www.pjrc.com/store/teensy36.html). I might try to optimize it to fit on the Uno but it will require careful sharing of resources, and I don't want that complication in the basic demo.
 
 Uploading this to anything Arduino-compatible (implementing the `Serial` methods, etc) and manually connecting to the appropriate serial port in QGroundControl (`Q Menu->Comm Links->Add`) should result in a connected vehicle state.
 
@@ -22,4 +22,23 @@ Connecting, calibrating, and enabling a compatible joystick, like my Logitech F7
 
 ![](README_images/mavinspect.png)
 
-## This is a work in progress.
+The fields in the manual control message show the continous joystick values $x$, $y$, $z$, and $r$:
+
+![](README_images/mav_axis_monitor.png)
+
+and `buttons` gives one integer value for the entire button bitfield. Here, buttons 2 and 14 are pressed, giving $2^2+2^14=16388$:
+
+![](README_images/mav_button_monitor.png)
+
+This sketch demonstrates:
+ * Handling QGC's series of start-up queries to negotiate a successful "connection" between the controller and QGroundControl.
+ * Handling the `MANUAL_CONTROL` messages that you'll want to use for vehicle/robot teleoperation.
+ * Handling and acknowledging arm/disarm commands.
+
+## Caveats and Suggestions
+
+I started with the [connection control flow](https://dev.qgroundcontrol.com/en/communication_flow.html) in the [QGroundControl Developers' Guide](https://dev.qgroundcontrol.com/en/). I dug through several autopilots' source code trying to diagram the connection control flow, but with many layers of object-oriented code across hundreds of files, this was not particularly productive.
+
+So, to fill in the details, I printed MAVLink message contents to a debug console and worked out the exact set of messages I needed through trial and error. I believe that the negotiations in this sketch are close to minimal to establish a "connection" and to get the joystick interface to appear in QGC, but I haven't tested that exhaustively since I got the connection to work.
+
+I also assume in this sketch that the connection between QGC and the vehicle controller is perfect. With unreliable communications, missed bytes, so on, there may be more messages that would need to be handled that I wouldn't have seen in my testing over a wired link.
