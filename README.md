@@ -11,4 +11,15 @@ This sketch is a demonstration and is not necessarily intended to be useful by i
 
 That said, I was looking to add MAVLink telemetry and control to a platform where the existing autopilot frameworks were a poor fit. If you're in this situation and want to successfully connect to QGC using the basic MAVLink C headers, you may find this example helpful.
 
+## Using This Sketch
+
+I was hoping to implement this on an Arduino Uno, but as-is it doesn't fit in memory. 
+So far, I've tested this on a Teensy 3.6. I might try to optimize it to fit on the Uno but it will require more careful sharing of resources, and I don't want that complication in the basic demo.
+
+Uploading this to anything Arduino-compatible (implementing the `Serial` methods, etc) and manually connecting to the appropriate serial port in QGroundControl (`Q Menu->Comm Links->Add`) should result in a connected vehicle state.
+
+Connecting, calibrating, and enabling a compatible joystick, like my Logitech F710, will cause QGroundControl to start sending [`#69 MANUAL_CONTROL`](https://mavlink.io/en/messages/common.html#MANUAL_CONTROL) messages to the target controller. To simplify the hardware for this demonstration, the sketch just re-transmits the manual control message back to QGroundControl. The re-transmitted messages can be viewed in the MAVLink Inspector widget:
+
+![](README_images/mavinspect.png)
+
 ## This is a work in progress.
