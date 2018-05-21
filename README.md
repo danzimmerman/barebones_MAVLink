@@ -48,3 +48,5 @@ I started with the [connection control flow](https://dev.qgroundcontrol.com/en/c
 Instead, I printed information about every valid MAVLink message that came in and worked out the specific messages I needed through trial and error. I believe that all the message responses in this sketch *are* necessary to establish a "connection" and to get the joystick interface to appear in QGC, but I haven't tested that exhaustively since I got the connection to work.
 
 I also assume that the connection between QGC and the vehicle controller is perfect. With unreliable communications, there may be some re-request messages that would need to be handled that I wouldn't have seen in my testing over a wired link.
+
+Finally, so far my testing has used the [Blue Robotics Fork of QGroundControl](https://discuss.bluerobotics.com/t/software-updates-8-may-2018/2617). I will test this with the latest official version as soon as I can, but I have not done so yet.
