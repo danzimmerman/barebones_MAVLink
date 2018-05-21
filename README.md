@@ -5,7 +5,7 @@
 
 However, I had a hard time finding clear documentation or a simple example of how to establish a MAVLink "connection" between a vehicle and [QGroundControl](http://qgroundcontrol.com/) outside of the context of a complicated UAV or UUV autopilot framework. 
 
-The Arduino sketch here uses a few [common MAVLink messages](https://mavlink.io/en/messages/common.html) and auto-generated C headers (added to this project as a submodule) to negotiate a serial-port connection with QGroundControl. Once connected, the Arduino will send some simple telemetry to QGroundControl and respond to manual control packets from QGC if a [supported joystick](https://docs.qgroundcontrol.com/en/SetupView/Joystick.html#supported-joysticks) is connected to the ground control computer. I tested this with the Logitech F710.
+The Arduino-compatible sketch here uses a few [common MAVLink messages](https://mavlink.io/en/messages/common.html) and auto-generated C headers (added to this project as a submodule) to negotiate a serial-port connection with QGroundControl. Once connected, the controller will send some simple telemetry (*pending*) to QGroundControl and respond to manual control packets from QGC if a [supported joystick](https://docs.qgroundcontrol.com/en/SetupView/Joystick.html#supported-joysticks) is connected to the ground control computer. I tested this with the Logitech F710.
 
 This sketch is a demonstration and is not necessarily intended to be useful by itself. If you are working with a [quadcopter](http://px4.io/), [boat](https://discuss.ardupilot.org/t/rover-3-0-0-release/8267), [submarine](https://github.com/bluerobotics/ardusub/), or [wheeled rover](https://discuss.ardupilot.org/t/rover-3-0-0-release/8267), using one of the appropriate autopilot software offerings would probably be more appropriate than working with MAVLink messages directly. 
 
@@ -14,7 +14,7 @@ That said, I was looking to add MAVLink telemetry and control to a platform wher
 ## Using This Sketch
 
 I was hoping to implement this on an Arduino Uno, but as-is it doesn't fit in memory. 
-Tests here use a [Teensy 3.6](https://www.pjrc.com/store/teensy36.html). I might try to optimize it to fit on the Uno but it will require careful sharing of resources, and I don't want that complication in the basic demo.
+Tests so far use a [Teensy 3.6](https://www.pjrc.com/store/teensy36.html). I might try to optimize it to fit on the Uno but it will require careful sharing of resources, and I don't want that complication in the basic demo.
 
 Uploading this to anything Arduino-compatible (implementing the `Serial` methods, etc) and manually connecting to the appropriate serial port in QGroundControl (`Q Menu->Comm Links->Add`) should result in a connected vehicle state.
 
