@@ -28,6 +28,7 @@
 */
 
 #include "./mavlink_c_v2/common/mavlink.h"
+#include "math.h"
 
 mavlink_message_t mvl_tx_message; //A special MAVLink message data structure. 
 mavlink_message_t mvl_rx_message;
@@ -39,8 +40,9 @@ const uint8_t mvl_chan = MAVLINK_COMM_1;  //MAVLink channel 1 appears to be requ
 //In my actual code for the Cypress PSoC, I use timer interrupts to schedule all the robot tasks.
 const uint32_t hb_interval = 1000; //heartbeat interval in milliseconds - 1 second
 uint32_t t_last_hb = 0;
-const uint32_t sys_interval = 250; //4 system status messages per second
+const uint32_t sys_stat_interval = 100; //10 system status messages per second
 uint32_t t_last_sys_stat =0;
+int16_t sys_stat_count = 0;
 uint8_t mvl_armed = 0;
 uint8_t mvl_packet_recieved = 0;
 
@@ -221,7 +223,7 @@ void loop()
    * ==============================================================================*/
    
   if ((millis()-t_last_hb)>hb_interval)
-  {
+  { //#0 HEARTBEAT https://mavlink.io/en/messages/common.html#HEARTBEAT
     mavlink_heartbeat_t mvl_hb; //struct with user fields: uint32_t custom_mode, uint8_t type, uint8_t autopilot, uint8_t base_mode, uint8_t system_status;
     mvl_hb.type = MAV_TYPE_SUBMARINE; //My vehicle is an underwater ROV. Change as appropriate. See: https://github.com/mavlink/c_library_v2/blob/748192f661d0df3763501cfc432861d981952921/common/common.h#L69
     mvl_hb.autopilot = MAV_AUTOPILOT_GENERIC; //See https://github.com/mavlink/c_library_v2/blob/748192f661d0df3763501cfc432861d981952921/common/common.h#L40
@@ -240,6 +242,75 @@ void loop()
                                       &mvl_tx_message,&mvl_hb);
     MVL_Transmit_Message(&mvl_tx_message);
     t_last_hb = millis();  
+  }
+
+  if ((millis()-t_last_sys_stat)>sys_stat_interval)
+  {
+    
+    //We'll make up some fake periodic data to feed to the QGroundControl widget
+    float pfreq = 0.2; //slowly varying
+    float phaserad = 2*PI*pfreq*millis()/1000.0;
+    //Send the current phase angle in degrees times 100 as the voltage.
+    //Voltage will ramp from 10000 to 16,000 mV over 60 sys_stat_intervals... 10-16V on the QGC widget
+    int16_t angle_as_cV = sys_stat_count*100+10000;
+    sys_stat_count+=1;
+    sys_stat_count%=60;
+    //I often use the mavlink_<message name>_pack_chan() functions that 
+    //accept each field as an argument instead of the mavlink_<message name>_encode() that
+    //accepts a struct. They should save some memory to skip the extra
+    //message struct, but I think setting each field by name in a demo code is easier to follow.
+    
+    mavlink_sys_status_t mvl_sys_stat; //#1 SYS_STATUS https://mavlink.io/en/messages/common.html#SYS_STATUS
+    mvl_sys_stat.onboard_control_sensors_present = 0; //To set these, consult https://mavlink.io/en/messages/common.html#MAV_SYS_STATUS_SENSOR
+    mvl_sys_stat.onboard_control_sensors_enabled = 0;
+    mvl_sys_stat.onboard_control_sensors_health = 0;
+    mvl_sys_stat.load = 0;
+    mvl_sys_stat.voltage_battery = angle_as_cV; //the only non-trivial telemetry we're sending, shows up several places in QGC
+    mvl_sys_stat.current_battery = -1;
+    mvl_sys_stat.battery_remaining = -1;
+    mvl_sys_stat.drop_rate_comm = 0;
+    mvl_sys_stat.errors_comm = 0;
+    mvl_sys_stat.errors_count1 = 0;
+    mvl_sys_stat.errors_count2 = 0;
+    mvl_sys_stat.errors_count3 = 0;
+    mvl_sys_stat.errors_count4 = 0;
+    
+    //We'll also send an attitude quaternion to display something in the QGC
+    //roll/pitch widget and in the compass.
+    //The code below results in a gentle spherical rocking in the QGC roll/pitch widget
+    //and a continuous rotation of the displayed heading.
+    
+    float maxang = 0.0873; // about five degrees
+    float roll = maxang*sin(phaserad);
+    float pitch = maxang*cos(phaserad);
+    float yaw = phaserad;
+    
+    //Quaternion conversion taken from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_Code
+    float cy = cos(yaw * 0.5);
+    float sy = sin(yaw * 0.5);
+    float cr = cos(roll * 0.5);
+    float sr = sin(roll * 0.5);
+    float cp = cos(pitch * 0.5);
+    float sp = sin(pitch * 0.5);
+  
+    mavlink_attitude_quaternion_t mvl_att_quat; //#31 ATTITUDE_QUATERNION https://mavlink.io/en/messages/common.html#ATTITUDE_QUATERNION
+    mvl_att_quat.time_boot_ms = millis();
+    mvl_att_quat.q1 = cy * cr * cp + sy * sr * sp; //https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_Code
+    mvl_att_quat.q2 = cy * sr * cp - sy * cr * sp;
+    mvl_att_quat.q3 = cy * cr * sp + sy * sr * cp;
+    mvl_att_quat.q4 = sy * cr * cp - cy * sr * sp;
+    
+    mvl_att_quat.rollspeed = 2*PI*pfreq*maxang*cos(phaserad); //d/dt A*sin(2*pi*f*t) = 2*pi*f*A*cos(2*pi*f*t)
+    mvl_att_quat.pitchspeed = -2*PI*pfreq*maxang*sin(phaserad);
+    mvl_att_quat.yawspeed = 2*PI*pfreq; 
+    
+    mavlink_msg_sys_status_encode_chan(mvl_sysid,mvl_compid,mvl_chan,
+                                      &mvl_tx_message,&mvl_sys_stat);
+    MVL_Transmit_Message(&mvl_tx_message);
+    mavlink_msg_attitude_quaternion_encode_chan(mvl_sysid,mvl_compid,mvl_chan,
+                                      &mvl_tx_message,&mvl_att_quat);
+    MVL_Transmit_Message(&mvl_tx_message);
+    t_last_sys_stat = millis();  
   }
 
 
