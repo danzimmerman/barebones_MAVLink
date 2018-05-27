@@ -5,7 +5,7 @@
 
 I got it working, but had a hard time finding clear documentation or a simple example of how to establish a MAVLink "connection" between a vehicle and [QGroundControl](http://qgroundcontrol.com/) outside of the context of a complicated UAV or UUV autopilot framework. 
 
-The Arduino-compatible sketch here uses some [common MAVLink messages](https://mavlink.io/en/messages/common.html) via the auto-generated C headers (added to this project as a submodule) to negotiate a serial-port connection with QGroundControl. Once connected, the controller will send some simple telemetry (*pending*) to QGroundControl and respond to manual control packets from QGC. Manual control assumes that a [supported joystick](https://docs.qgroundcontrol.com/en/SetupView/Joystick.html#supported-joysticks) is connected to the ground control computer and calibrated. I tested this with the Logitech F710.
+The Arduino-compatible sketch here uses some [common MAVLink messages](https://mavlink.io/en/messages/common.html) via the auto-generated C headers (added to this project as a submodule) to negotiate a serial-port connection with QGroundControl. Once connected, the controller will send some simple fake telemetry to QGroundControl and respond to manual control packets from QGC. Manual control assumes that a [supported joystick](https://docs.qgroundcontrol.com/en/SetupView/Joystick.html#supported-joysticks) is connected to the ground control computer and calibrated. I tested this with the Logitech F710.
 
 This sketch is a demonstration and is not necessarily intended to be useful by itself. If you are working with a [quadcopter](http://px4.io/), [boat](https://discuss.ardupilot.org/t/rover-3-0-0-release/8267), [submarine](https://github.com/bluerobotics/ardusub/), or [wheeled rover](https://discuss.ardupilot.org/t/rover-3-0-0-release/8267), using one of the appropriate autopilot software offerings would probably be more appropriate than working with MAVLink messages directly.
 
@@ -40,6 +40,10 @@ This sketch demonstrates:
    * Responding to a `MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES` command (in a `COMMAND_LONG` message) with an `AUTOPILOT_VERSION` message. 
  * Handling the `MANUAL_CONTROL` messages that you'll want to use for vehicle/robot teleoperation.
  * Handling and acknowledging arm/disarm commands (which come in as a `COMMAND_LONG` message)
+ * Sending some fake telemetry via `SYS_STATUS` and `ATTITUDE_QUATERNION` messages including: 
+   * A gentle rocking in pitch and roll in the attitude display.
+   * A continuous rotation in the heading display.
+   * A battery voltage ramp from 10-16V.
 
 ## Caveats
 
