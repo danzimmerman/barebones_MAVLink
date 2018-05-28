@@ -17,7 +17,7 @@ My example is targeted toward the use of QGroundControl to control and monitor a
 
 I was hoping to implement this on an Arduino Uno, but in its current form, it doesn't fit in memory. It uses about 36k flash and 5.7k for globals. In tests so far, it's running on a [Teensy 3.6](https://www.pjrc.com/store/teensy36.html), where it only consumes a few percent of the available memory. I might try to optimize it to fit on the Uno but it will require careful sharing of resources, and/or tinkering with the internal MAVLink buffer allocations and I don't want that complication in a basic demo. 
 
-Uploading this to anything Arduino-compatible (implementing the `Serial` methods, etc) and manually connecting to the appropriate serial port in QGroundControl (`Q Menu->Comm Links->Add`) should result in a connected vehicle state.
+Upload this to anything Arduino-compatible (implementing the `Serial` methods, etc). To open the communications link, you need to manually configure (`Q Menu->Comm Links->Add`) and connect to the appropriate serial port in QGroundControl. This will result in a connected "vehicle" and some incoming telemetry.
 
 Connecting, calibrating, and enabling a compatible joystick, like my Logitech F710, will allow QGroundControl to send [`#69 MANUAL_CONTROL`](https://mavlink.io/en/messages/common.html#MANUAL_CONTROL) messages to the target controller. To avoid the need for external hardware for this demonstration, the sketch simply transmits the recieved manual control message back to QGroundControl. The re-transmitted messages can be viewed in the MAVLink Inspector widget:
 
@@ -32,6 +32,12 @@ and `buttons` gives one integer value for the entire button bitfield. Here, butt
 ![](README_images/mav_button_monitor.png)
 
 To use the manual control data, you can access the values like `mvl_joy.z` or `mvl_joy.buttons` in the function `MVL_Handle_Manual_Control()`. 
+
+If you don't have a physical joystick or gamepad yet, you can turn on the virtual joysticks in the QGC settings to start the streaming and loopback of the `MANUAL_CONTROL` messages: 
+
+![](README_images/mav_button_monitor.png)
+
+Without a real or virtual joystick, QGC won't send any `MANUAL_CONTROL` messages and so you won't see them in MAVLink Inspector.
 
 This sketch demonstrates:
  * Handling QGC's series of start-up queries to negotiate a successful "connection" between the controller and QGroundControl, i.e.
@@ -51,6 +57,6 @@ I started with the [connection control flow](https://dev.qgroundcontrol.com/en/c
 
 Instead, I printed information about every valid MAVLink message that came in and worked out the specific messages I needed through trial and error. I believe that all the message responses in this sketch *are* necessary to establish a "connection" and to get the joystick interface to appear in QGC, but I haven't tested that exhaustively since I got the connection to work.
 
-I also assume that the connection between QGC and the vehicle controller is perfect. With unreliable communications, there may be some re-request messages that would need to be handled that I wouldn't have seen in my testing over a wired link.
+I also assume that the connection between QGC and the vehicle controller is perfect. With unreliable communications, there may be some re-request messages that would need to be handled that I wouldn't have seen in my testing over a wired link. 
 
-Finally, so far my testing has used the [Blue Robotics Fork of QGroundControl](https://discuss.bluerobotics.com/t/software-updates-8-may-2018/2617). I will test this with the latest official version as soon as I can, but I have not done so yet.
+I've tested this on Windows 10 with the [Blue Robotics Fork of QGroundControl (v3.2.4)](https://discuss.bluerobotics.com/t/software-updates-8-may-2018/2617) and the [official version (v 3.3.2)](http://qgroundcontrol.com/downloads/).
