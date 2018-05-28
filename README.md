@@ -35,7 +35,7 @@ To use the manual control data, you can access the values like `mvl_joy.z` or `m
 
 If you don't have a physical joystick or gamepad yet, you can turn on the virtual joysticks in the QGC settings to start the streaming and loopback of the `MANUAL_CONTROL` messages: 
 
-![](README_images/mav_button_monitor.png)
+![](README_images/virt_joystick.png)
 
 Without a real or virtual joystick, QGC won't send any `MANUAL_CONTROL` messages and so you won't see them in MAVLink Inspector.
 
