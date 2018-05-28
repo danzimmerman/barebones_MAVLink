@@ -31,7 +31,7 @@ and `buttons` gives one integer value for the entire button bitfield. Here, butt
 
 ![](README_images/mav_button_monitor.png)
 
-To use the manual control data, you can access the values like `mvl_joy.z` or `mvl_joy.buttons` in the function `MVL_Handle_Manual_Control()`. 
+To use the manual control data, you can access the values like `mvl_joy.z` or `mvl_joy.buttons` in the function `MVL_Handle_Manual_Control()`. Note that the joystick axis that's mapped to `throttle` has a different behavior from the others.
 
 If you don't have a physical joystick or gamepad yet, you can turn on the virtual joysticks in the QGC settings to start the streaming and loopback of the `MANUAL_CONTROL` messages: 
 
