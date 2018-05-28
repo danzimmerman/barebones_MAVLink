@@ -37,7 +37,7 @@ If you don't have a physical joystick or gamepad yet, you can turn on the virtua
 
 ![](README_images/virt_joystick.png)
 
-Without a real or virtual joystick, QGC won't send any `MANUAL_CONTROL` messages and so you won't see them in MAVLink Inspector.
+Without a real or virtual joystick, QGC won't send any `MANUAL_CONTROL` messages to the microcontroller and so you won't see them in MAVLink Inspector.
 
 This sketch demonstrates:
  * Handling QGC's series of start-up queries to negotiate a successful "connection" between the controller and QGroundControl, i.e.
