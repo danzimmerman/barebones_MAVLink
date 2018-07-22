@@ -73,6 +73,12 @@ void MVL_Handle_Param_Request_List(mavlink_message_t* mvl_msg_ptr)
   mavlink_param_value_t mvl_param;
   
   mvl_param.param_id[0] = 'a'; //a parameter ID string, less than 16 characters.
+  mvl_param.param_id[1] = '_';
+  mvl_param.param_id[2] = 'p';
+  mvl_param.param_id[3] = 'a';
+  mvl_param.param_id[4] = 'r';
+  mvl_param.param_id[5] = 'm';
+  mvl_param.param_id[6] = 0; //null terminated
   mvl_param.param_value = 123.456; //the parameter value as a float
   mvl_param.param_type = MAV_PARAM_TYPE_REAL32; //https://mavlink.io/en/messages/common.html#MAV_PARAM_TYPE
   mvl_param.param_count = 1; //We have just one parameter to send. 
@@ -94,7 +100,7 @@ void MVL_Handle_Command_Long(mavlink_message_t* mvl_msg_ptr)
       if (1==mvl_cmd.param1)
       {
         mavlink_autopilot_version_t mvl_apv; https://mavlink.io/en/messages/common.html#AUTOPILOT_VERSION
-        mvl_apv.flight_sw_version = 1;
+        mvl_apv.flight_sw_version = 2;
         mvl_apv.middleware_sw_version = 1;
         mvl_apv.board_version = 1;
         mvl_apv.vendor_id = 10101;
@@ -250,9 +256,9 @@ void loop()
     //We'll make up some fake periodic data to feed to the QGroundControl widget
     float pfreq = 0.2; //slowly varying
     float phaserad = 2*PI*pfreq*millis()/1000.0;
-    //Send the current phase angle in degrees times 100 as the voltage.
-    //Voltage will ramp from 10000 to 16,000 mV over 60 sys_stat_intervals... 10-16V on the QGC widget
-    int16_t angle_as_cV = sys_stat_count*100+10000;
+    
+    //We'll send a varying voltage signal that ramps from 10000 to 16,000 mV over 60 sys_stat_intervals... 10-16V on the QGC widget
+    int16_t angle_as_mV = sys_stat_count*100+10000;
     sys_stat_count+=1;
     sys_stat_count%=60;
     //I often use the mavlink_<message name>_pack_chan() functions that 
@@ -265,7 +271,7 @@ void loop()
     mvl_sys_stat.onboard_control_sensors_enabled = 0;
     mvl_sys_stat.onboard_control_sensors_health = 0;
     mvl_sys_stat.load = 0;
-    mvl_sys_stat.voltage_battery = angle_as_cV; //the only non-trivial telemetry we're sending, shows up several places in QGC
+    mvl_sys_stat.voltage_battery = angle_as_mV; //the only non-trivial telemetry we're sending, shows up several places in QGC
     mvl_sys_stat.current_battery = -1;
     mvl_sys_stat.battery_remaining = -1;
     mvl_sys_stat.drop_rate_comm = 0;
