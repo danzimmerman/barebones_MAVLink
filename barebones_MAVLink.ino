@@ -108,6 +108,7 @@ void MVL_Handle_Command_Long(mavlink_message_t* mvl_msg_ptr)
         mvl_apv.uid = 0;
         mvl_apv.capabilities = 0; //See: https://mavlink.io/en/messages/common.html#MAV_PROTOCOL_CAPABILITY
         mvl_apv.capabilities |= MAV_PROTOCOL_CAPABILITY_SET_ATTITUDE_TARGET; //Just as an example, code does not support! https://mavlink.io/en/messages/common.html#MAV_PROTOCOL_CAPABILITY_SET_ATTITUDE_TARGET
+        mvl_apv.capabilities |= MAV_PROTOCOL_CAPABILITY_MAVLINK2;
         mavlink_msg_autopilot_version_encode_chan(mvl_sysid,mvl_compid,mvl_chan,
                                                   &mvl_tx_message,&mvl_apv);
         MVL_Transmit_Message(&mvl_tx_message);
