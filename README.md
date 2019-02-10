@@ -17,7 +17,10 @@ My example is targeted toward using QGroundControl to control and monitor a well
 
 I was hoping to implement this on an Arduino Uno, but in its current form, it doesn't fit in memory. It uses about 36k flash and 5.7k for globals. In tests so far, it's running on a [Teensy 3.6](https://www.pjrc.com/store/teensy36.html), where it only consumes a few percent of the available memory. I might try to optimize it to fit on the Uno but it will require careful sharing of resources, and/or tinkering with the internal MAVLink buffer allocations and I don't want that complication in a basic demo. 
 
-Upload this to anything Arduino-compatible (implementing the `Serial` methods, etc). To open the communications link, you need to manually configure (`Q Menu->Comm Links->Add`) and connect to the appropriate serial port in QGroundControl. This will result in a connected "vehicle" and some incoming telemetry.
+If you clone this repository, make sure you run `git submodule init` and `git submodule update` in the project directory to actually
+pull in the MAVLink headers.
+
+Once you have the MAVLink headers, compile and upload this to anything Arduino-compatible (implementing the `Serial` methods, etc). To open the communications link, you need to manually configure (`Q Menu->Comm Links->Add`) and connect to the appropriate serial port in QGroundControl. This will result in a connected "vehicle" and some incoming telemetry.
 
 Connecting, calibrating, and enabling a compatible joystick, like my Logitech F710, will allow QGroundControl to send [`#69 MANUAL_CONTROL`](https://mavlink.io/en/messages/common.html#MANUAL_CONTROL) messages to the target controller. To avoid the need for external hardware for this demonstration, the sketch simply transmits the recieved manual control message back to QGroundControl. The re-transmitted messages can be viewed in the MAVLink Inspector widget:
 
