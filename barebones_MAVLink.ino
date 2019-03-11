@@ -44,7 +44,7 @@ const uint32_t sys_stat_interval = 100; //10 system status messages per second
 uint32_t t_last_sys_stat =0;
 int16_t sys_stat_count = 0;
 uint8_t mvl_armed = 0;
-uint8_t mvl_packet_recieved = 0;
+uint8_t mvl_packet_received = 0;
 
 /*==============================================================
  * Message-handling and transmitting functions 
@@ -161,20 +161,20 @@ void loop()
   /* ======================== Serial MAVLink Message Reception ====================
    * If bytes come in on the serial port, we feed them to mavlink_parse_char().
    * This helper function keeps track of incoming bytes and alerts us when it's 
-   * recieved a complete, valid MAVLink message.
+   * received a complete, valid MAVLink message.
    * See https://github.com/mavlink/c_library_v2/blob/master/mavlink_helpers.h#L966
    *==============================================================================*/
    
   while (Serial.available())
   {
     uint8_t rxbyte = Serial.read();
-    mvl_packet_recieved = mavlink_parse_char(mvl_chan,rxbyte, 
+    mvl_packet_received = mavlink_parse_char(mvl_chan,rxbyte, 
                                              &mvl_rx_message,
                                              &mvl_rx_status);
   }
   
-  /* ====================== Recieved MAVLink Message Handling ==================
-   *  If a full incoming MAVLink message is recieved, AND the message 
+  /* ====================== received MAVLink Message Handling ==================
+   *  If a full incoming MAVLink message is received, AND the message 
    *  came from the GCS (System ID 255), we handle it here. 
    *  
    *  In this code we: 
@@ -189,9 +189,9 @@ void loop()
    *  For example: https://github.com/mavlink/c_library_v2/blob/master/common/mavlink_msg_manual_control.h#L4
    *  You can find message numbers and field descriptions at https://mavlink.io/en/messages/common.html 
    * ==================================================================== */
-  if ((mvl_packet_recieved) && (255==mvl_rx_message.sysid)) 
+  if ((mvl_packet_received) && (255==mvl_rx_message.sysid)) 
   {
-    mvl_packet_recieved = 0; //reset the "packet recieved" flag
+    mvl_packet_received = 0; //reset the "packet received" flag
     switch (mvl_rx_message.msgid)
     {
       case MAVLINK_MSG_ID_MANUAL_CONTROL: //#69 https://mavlink.io/en/messages/common.html#MANUAL_CONTROL
@@ -226,7 +226,7 @@ void loop()
    * You don't want to use blocking delay() calls in code like this, because you want
    * to read the incoming serial port as often as possible.
    * 
-   * In my actual target system, a Cypress PSoC, I use timer interrupts for scheduling.
+   * In my usual target system, I use timer interrupts for scheduling.
    * ==============================================================================*/
    
   if ((millis()-t_last_hb)>hb_interval)
